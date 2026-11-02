@@ -1,7 +1,9 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProdutosDAO {
 
@@ -17,7 +19,22 @@ public class ProdutosDAO {
         }
     }
 
-    public ArrayList<ProdutosDTO> listarProdutos() {
-        return new ArrayList<>();
+    public List<ProdutosDTO> listarProdutos() throws SQLException {
+        String sql = "SELECT id, nome, valor, status FROM produtos ORDER BY id";
+        List<ProdutosDTO> produtos = new ArrayList<>();
+
+        try (Connection conn = new conectaDAO().connectDB();
+                PreparedStatement statement = conn.prepareStatement(sql);
+                ResultSet results = statement.executeQuery()) {
+            while (results.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(results.getLong("id"));
+                produto.setNome(results.getString("nome"));
+                produto.setValor(results.getInt("valor"));
+                produto.setStatus(results.getString("status"));
+                produtos.add(produto);
+            }
+        }
+        return produtos;
     }
 }

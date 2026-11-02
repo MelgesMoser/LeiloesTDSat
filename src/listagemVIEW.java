@@ -1,5 +1,7 @@
 
-import java.util.ArrayList;
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -201,25 +203,25 @@ public class listagemVIEW extends javax.swing.JFrame {
     private javax.swing.JTable listaProdutos;
     // End of variables declaration//GEN-END:variables
 
-    private void listarProdutos(){
+    private void listarProdutos() {
         try {
-            ProdutosDAO produtosdao = new ProdutosDAO();
-            
+            List<ProdutosDTO> listagem = new ProdutosDAO().listarProdutos();
             DefaultTableModel model = (DefaultTableModel) listaProdutos.getModel();
-            model.setNumRows(0);
-            
-            ArrayList<ProdutosDTO> listagem = produtosdao.listarProdutos();
-            
-            for(int i = 0; i < listagem.size(); i++){
+
+            model.setRowCount(0);
+            for (ProdutosDTO produto : listagem) {
                 model.addRow(new Object[]{
-                    listagem.get(i).getId(),
-                    listagem.get(i).getNome(),
-                    listagem.get(i).getValor(),
-                    listagem.get(i).getStatus()
+                    produto.getId(),
+                    produto.getNome(),
+                    produto.getValor(),
+                    produto.getStatus()
                 });
             }
-        } catch (Exception e) {
+        } catch (SQLException erro) {
+            JOptionPane.showMessageDialog(this,
+                    "Não foi possível carregar os produtos. Verifique a conexão com o banco de dados.\n"
+                    + erro.getMessage(),
+                    "Falha na listagem", JOptionPane.ERROR_MESSAGE);
         }
-    
     }
 }
