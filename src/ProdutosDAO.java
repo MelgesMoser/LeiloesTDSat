@@ -7,6 +7,20 @@ import java.util.List;
 
 public class ProdutosDAO {
 
+    public boolean venderProduto(Long id) throws SQLException {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("O ID do produto deve ser maior que zero.");
+        }
+
+        String sql = "UPDATE produtos SET status = ? WHERE id = ?";
+        try (Connection conn = new conectaDAO().connectDB();
+                PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, "Vendido");
+            statement.setLong(2, id);
+            return statement.executeUpdate() == 1;
+        }
+    }
+
     public boolean cadastrarProduto(ProdutosDTO produto) throws SQLException {
         String sql = "INSERT INTO produtos (nome, valor, status) VALUES (?, ?, ?)";
 
