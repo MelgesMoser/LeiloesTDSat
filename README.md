@@ -16,3 +16,5 @@ O arquivo [`database/uc11.sql`](database/uc11.sql) contém o dump do banco `uc11
 ## Abrir o projeto
 
 Abra a pasta do projeto no Apache NetBeans. O projeto usa Ant (`build.xml`) e mantém as dependências JDBC em `lib/`.
+
+Ao executar o projeto pelo NetBeans ou pelo Ant, a tela `cadastroVIEW` é aberta primeiro.
