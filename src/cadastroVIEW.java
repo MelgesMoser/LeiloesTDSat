@@ -1,3 +1,6 @@
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -56,7 +59,7 @@ public class cadastroVIEW extends javax.swing.JFrame {
         });
 
         btnCadastrar.setBackground(new java.awt.Color(153, 255, 255));
-        btnCadastrar.setText("Cadastrar");
+        btnCadastrar.setText("Salvar");
         btnCadastrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadastrarActionPerformed(evt);
@@ -140,17 +143,32 @@ public class cadastroVIEW extends javax.swing.JFrame {
     }//GEN-LAST:event_cadastroNomeActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        ProdutosDTO produto = new ProdutosDTO();
-        String nome = cadastroNome.getText();
-        String valor = cadastroValor.getText();
-        String status = "A Venda";
-        produto.setNome(nome);
-        produto.setValor(Integer.parseInt(valor));
-        produto.setStatus(status);
-        
-        ProdutosDAO produtodao = new ProdutosDAO();
-        produtodao.cadastrarProduto(produto);
-        
+        try {
+            ProdutosDTO produto = ProdutoValidator.criarProduto(
+                    cadastroNome.getText(), cadastroValor.getText());
+            boolean salvo = new ProdutosDAO().cadastrarProduto(produto);
+
+            if (salvo) {
+                JOptionPane.showMessageDialog(this,
+                        "Produto cadastrado com sucesso.",
+                        "Cadastro realizado", JOptionPane.INFORMATION_MESSAGE);
+                cadastroNome.setText("");
+                cadastroValor.setText("");
+                cadastroNome.requestFocusInWindow();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "O produto não foi cadastrado.",
+                        "Falha no cadastro", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException erro) {
+            JOptionPane.showMessageDialog(this, erro.getMessage(),
+                    "Dados inválidos", JOptionPane.WARNING_MESSAGE);
+        } catch (SQLException erro) {
+            JOptionPane.showMessageDialog(this,
+                    "Não foi possível cadastrar o produto. Verifique a conexão com o banco de dados.\n"
+                    + erro.getMessage(),
+                    "Falha no cadastro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosActionPerformed

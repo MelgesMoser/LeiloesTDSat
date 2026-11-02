@@ -1,33 +1,25 @@
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
 
-
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author Adm
- */
+/** Opens connections to the auction database. */
 public class conectaDAO {
-    
-    public Connection connectDB(){
-        Connection conn = null;
-        
-        try {
-        
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/uc11?user=root&password=");
-            
-        } catch (SQLException erro){
-            JOptionPane.showMessageDialog(null, "Erro ConectaDAO" + erro.getMessage());
+
+    private static final String DEFAULT_URL = "jdbc:mysql://localhost/uc11";
+    private static final String DEFAULT_USER = "root";
+
+    public Connection connectDB() throws SQLException {
+        String url = valueOrDefault("LEILOES_DB_URL", DEFAULT_URL);
+        String user = valueOrDefault("LEILOES_DB_USER", DEFAULT_USER);
+        String password = System.getenv("LEILOES_DB_PASSWORD");
+        if (password == null) {
+            password = "";
         }
-        return conn;
+        return DriverManager.getConnection(url, user, password);
     }
-    
+
+    private String valueOrDefault(String key, String fallback) {
+        String value = System.getenv(key);
+        return value == null || value.isBlank() ? fallback : value;
+    }
 }

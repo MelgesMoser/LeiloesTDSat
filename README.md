@@ -11,7 +11,7 @@ Aplicação desktop desenvolvida em Java para apoiar o controle de leilões. O s
 
 ## Banco de dados
 
-O arquivo [`database/uc11.sql`](database/uc11.sql) contém o dump do banco `uc11` e a tabela `produtos`. Crie o banco no MySQL/MariaDB e importe o arquivo SQL antes de executar a aplicação. A conexão configurada em `src/conectaDAO.java` utiliza `localhost`, usuário `root` e senha vazia; ajuste a configuração de acordo com seu ambiente.
+O arquivo [`database/uc11.sql`](database/uc11.sql) contém o dump do banco `uc11` e a tabela `produtos`. Crie o banco no MySQL/MariaDB e importe o arquivo SQL antes de executar a aplicação. Por padrão, a conexão usa `jdbc:mysql://localhost/uc11`, usuário `root` e senha vazia. Se seu ambiente usar outros dados, configure `LEILOES_DB_URL`, `LEILOES_DB_USER` e `LEILOES_DB_PASSWORD` como variáveis de ambiente.
 
 ## Abrir o projeto
 
