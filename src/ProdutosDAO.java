@@ -7,6 +7,20 @@ import java.util.List;
 
 public class ProdutosDAO {
 
+    public boolean venderProduto(Long id) throws SQLException {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("O ID do produto deve ser maior que zero.");
+        }
+
+        String sql = "UPDATE produtos SET status = ? WHERE id = ?";
+        try (Connection conn = new conectaDAO().connectDB();
+                PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, "Vendido");
+            statement.setLong(2, id);
+            return statement.executeUpdate() == 1;
+        }
+    }
+
     public boolean cadastrarProduto(ProdutosDTO produto) throws SQLException {
         String sql = "INSERT INTO produtos (nome, valor, status) VALUES (?, ?, ?)";
 
@@ -33,6 +47,27 @@ public class ProdutosDAO {
                 produto.setValor(results.getInt("valor"));
                 produto.setStatus(results.getString("status"));
                 produtos.add(produto);
+            }
+        }
+        return produtos;
+    }
+
+    public List<ProdutosDTO> listarProdutosVendidos() throws SQLException {
+        String sql = "SELECT id, nome, valor, status FROM produtos WHERE status = ? ORDER BY id";
+        List<ProdutosDTO> produtos = new ArrayList<>();
+
+        try (Connection conn = new conectaDAO().connectDB();
+                PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, "Vendido");
+            try (ResultSet results = statement.executeQuery()) {
+                while (results.next()) {
+                    ProdutosDTO produto = new ProdutosDTO();
+                    produto.setId(results.getLong("id"));
+                    produto.setNome(results.getString("nome"));
+                    produto.setValor(results.getInt("valor"));
+                    produto.setStatus(results.getString("status"));
+                    produtos.add(produto);
+                }
             }
         }
         return produtos;
